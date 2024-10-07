@@ -221,3 +221,33 @@ observer.observe(document.body, {
   childList: true,
   subtree: true,
 });
+
+/// Block Video Youtube
+
+function blockVideoYoutube() {
+  const playerContainer = document.getElementById("player");
+
+  if (playerContainer) {
+    playerContainer.innerText = "Video ini telah di pause";
+
+    const img = document.createElement("img");
+    img.src = "https://ariqhikari.github.io/proxy/assets/blocked-video.png";
+    img.style.width = "100%";
+    img.style.height = "auto";
+    img.style.objectFit = "cover";
+    img.style.pointerEvents = "none";
+    playerContainer.appendChild(img);
+  }
+}
+
+const urlYoutube = [
+  "https://www.youtube.com/watch?app=desktop&v=LTcmiwlT4KU&ab_channel=saranghoe",
+  "https://www.youtube.com/watch?v=M1YI40N2e3A&ab_channel=WindahBasudara",
+  "https://www.youtube.com/watch?v=I4nI_rowdhM&ab_channel=CompilationsGuy",
+  "https://www.youtube.com/watch?v=we6PRXmfils&ab_channel=Dragonxthe1",
+];
+
+const url = window.location.href;
+if (urlYoutube.includes(url)) {
+  blockVideoYoutube();
+}
