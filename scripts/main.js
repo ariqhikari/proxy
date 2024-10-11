@@ -65,93 +65,93 @@ function coverImages() {
       !img.src.includes("logo") &&
       !img.src.includes("icon")
     ) {
-      if (isElementInViewport(img)) {
-        const overlay = document.createElement("div");
-        overlay.style.position = "absolute";
-        overlay.style.top = `${img.offsetTop}px`;
-        overlay.style.left = `${img.offsetLeft}px`;
-        overlay.style.width = `${imgWidth}px`;
-        overlay.style.height = `${imgHeight}px`;
-        overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-        overlay.style.color = "white";
-        overlay.style.display = "flex";
-        overlay.style.flexDirection = "column";
-        overlay.style.justifyContent = "center";
-        overlay.style.alignItems = "center";
-        overlay.style.fontSize = "16px";
-        overlay.style.textAlign = "center";
-        overlay.style.zIndex = "999999";
+      // if (isElementInViewport(img)) {
+      const overlay = document.createElement("div");
+      overlay.style.position = "absolute";
+      overlay.style.top = `${img.offsetTop}px`;
+      overlay.style.left = `${img.offsetLeft}px`;
+      overlay.style.width = `${imgWidth}px`;
+      overlay.style.height = `${imgHeight}px`;
+      overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+      overlay.style.color = "white";
+      overlay.style.display = "flex";
+      overlay.style.flexDirection = "column";
+      overlay.style.justifyContent = "center";
+      overlay.style.alignItems = "center";
+      overlay.style.fontSize = "16px";
+      overlay.style.textAlign = "center";
+      overlay.style.zIndex = "999999";
 
-        img.style.filter = "blur(64px)";
-        img.style.opacity = "0.7";
+      img.style.filter = "blur(64px)";
+      img.style.opacity = "0.7";
 
-        const sensitiveText = document.createElement("div");
-        sensitiveText.innerText = "Image Content";
-        sensitiveText.style.fontSize = "18px";
-        sensitiveText.style.fontWeight = "bold";
-        overlay.appendChild(sensitiveText);
+      const sensitiveText = document.createElement("div");
+      sensitiveText.innerText = "Image Content";
+      sensitiveText.style.fontSize = "18px";
+      sensitiveText.style.fontWeight = "bold";
+      overlay.appendChild(sensitiveText);
 
-        const description = document.createElement("div");
-        description.innerText =
-          "This image may contain sensitive or disturbing content.";
-        description.style.fontSize = "12px";
-        overlay.appendChild(description);
+      const description = document.createElement("div");
+      description.innerText =
+        "This image may contain sensitive or disturbing content.";
+      description.style.fontSize = "12px";
+      overlay.appendChild(description);
 
-        const loading = document.createElement("div");
-        loading.innerText = "Loading...";
-        loading.style.display = "none";
-        overlay.appendChild(loading);
+      const loading = document.createElement("div");
+      loading.innerText = "Loading...";
+      loading.style.display = "none";
+      overlay.appendChild(loading);
 
-        const button = document.createElement("button");
-        button.innerText = "See Image";
-        button.style.marginTop = "10px";
-        button.style.padding = "5px 15px";
-        button.style.backgroundColor = "transparent";
-        button.style.color = "white";
-        button.style.border = "1px solid white";
-        button.style.borderRadius = "5px";
-        button.style.cursor = "pointer";
-        button.onclick = function (e) {
-          e.stopPropagation();
-          e.preventDefault();
+      const button = document.createElement("button");
+      button.innerText = "See Image";
+      button.style.marginTop = "10px";
+      button.style.padding = "5px 15px";
+      button.style.backgroundColor = "transparent";
+      button.style.color = "white";
+      button.style.border = "1px solid white";
+      button.style.borderRadius = "5px";
+      button.style.cursor = "pointer";
+      button.onclick = function (e) {
+        e.stopPropagation();
+        e.preventDefault();
 
-          loading.style.display = "block";
-          button.disabled = true;
+        loading.style.display = "block";
+        button.disabled = true;
 
-          fetch("https://flask-snailly.unikomcodelabs.id/predict-image", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              image_url: img.src,
-            }),
+        fetch("https://flask-snailly.unikomcodelabs.id/predict-image", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            image_url: img.src,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("API response:", data);
+            if (data.hasil === "Berbahaya") {
+              img.src =
+                "https://ariqhikari.github.io/proxy/assets/blocked-image.png";
+            }
+
+            overlay.remove();
+            img.style.filter = "none";
+            img.style.opacity = "1";
+            img.dataset.covered = "true";
           })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log("API response:", data);
-              if (data.hasil === "Berbahaya") {
-                img.src =
-                  "https://ariqhikari.github.io/proxy/assets/blocked-image.png";
-              }
+          .catch((error) => {
+            console.error("Error fetching API:", error);
+          });
+      };
 
-              overlay.remove();
-              img.style.filter = "none";
-              img.style.opacity = "1";
-              img.dataset.covered = "true";
-            })
-            .catch((error) => {
-              console.error("Error fetching API:", error);
-            });
-        };
+      overlay.appendChild(button);
 
-        overlay.appendChild(button);
+      img.parentNode.insertBefore(overlay, img);
+      img.style.pointerEvents = "none";
 
-        img.parentNode.insertBefore(overlay, img);
-        img.style.pointerEvents = "none";
-
-        img.dataset.covered = "false";
-      }
+      img.dataset.covered = "false";
+      // }
     }
   }
 }
@@ -186,7 +186,11 @@ function handleInteractionVideo() {
   isPauseVideosRunning = false;
 }
 
-if (!window.location.href.includes("tiktok.com")) {
+if (
+  !window.location.href.includes("tiktok.com") &&
+  !window.location.href.includes("youtube.com") &&
+  !window.location.href.includes("snailly-block.netlify.app")
+) {
   const events = [
     "scroll",
     "click",
@@ -203,24 +207,26 @@ if (!window.location.href.includes("tiktok.com")) {
       window.interactionTimeout = setTimeout(handleInteractionImage, 100);
     });
   });
+
+  handleInteractionImage();
 }
 
-pauseAllVideos();
+// pauseAllVideos();
 
-const observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    if (mutation.type === "childList") {
-      console.log("New elements added to the DOM");
-      clearTimeout(window.interactionTimeout);
-      window.interactionTimeout = setTimeout(handleInteractionVideo, 100);
-    }
-  });
-});
+// const observer = new MutationObserver((mutations) => {
+//   mutations.forEach((mutation) => {
+//     if (mutation.type === "childList") {
+//       console.log("New elements added to the DOM");
+//       clearTimeout(window.interactionTimeout);
+//       window.interactionTimeout = setTimeout(handleInteractionVideo, 100);
+//     }
+//   });
+// });
 
-observer.observe(document.body, {
-  childList: true,
-  subtree: true,
-});
+// observer.observe(document.body, {
+//   childList: true,
+//   subtree: true,
+// });
 
 /// Block Video Youtube
 
@@ -228,12 +234,12 @@ function blockVideoYoutube() {
   const playerContainer = document.getElementById("player");
 
   if (playerContainer) {
-    playerContainer.innerText = "Video ini telah di pause";
-
     const img = document.createElement("img");
     img.src = "https://ariqhikari.github.io/proxy/assets/blocked-video.png";
+    img.style.position = "absolute";
+    img.style.top = 0;
     img.style.width = "100%";
-    img.style.height = "auto";
+    img.style.height = "100%";
     img.style.objectFit = "cover";
     img.style.pointerEvents = "none";
     playerContainer.appendChild(img);
