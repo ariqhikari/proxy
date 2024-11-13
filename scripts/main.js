@@ -118,7 +118,7 @@ function coverImages() {
         loading.style.display = "block";
         button.disabled = true;
 
-        fetch("https://flask-snailly.unikomcodelabs.id/predict-image", {
+        fetch("https://flask-snailly.unikom.ac.id/predict-image", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
