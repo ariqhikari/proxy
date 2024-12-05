@@ -65,59 +65,69 @@ function coverImages() {
       !img.src.includes("logo") &&
       !img.src.includes("icon")
     ) {
-      // if (isElementInViewport(img)) {
-      const overlay = document.createElement("div");
-      overlay.style.position = "absolute";
-      overlay.style.top = `${img.offsetTop}px`;
-      overlay.style.left = `${img.offsetLeft}px`;
-      overlay.style.width = `${imgWidth}px`;
-      overlay.style.height = `${imgHeight}px`;
-      overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-      overlay.style.color = "white";
-      overlay.style.display = "flex";
-      overlay.style.flexDirection = "column";
-      overlay.style.justifyContent = "center";
-      overlay.style.alignItems = "center";
-      overlay.style.fontSize = "16px";
-      overlay.style.textAlign = "center";
-      overlay.style.zIndex = "999999";
+      if (isElementInViewport(img)) {
+        console.log(img);
+        
+        const overlay = document.createElement("div");
+        overlay.style.position = "absolute";
+        overlay.style.top = `${img.offsetTop}px`;
+        overlay.style.left = `${img.offsetLeft}px`;
+        overlay.style.width = `${imgWidth}px`;
+        overlay.style.height = `${imgHeight}px`;
+        overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+        overlay.style.color = "white";
+        overlay.style.display = "flex";
+        overlay.style.flexDirection = "column";
+        overlay.style.justifyContent = "center";
+        overlay.style.alignItems = "center";
+        overlay.style.fontSize = "16px";
+        overlay.style.textAlign = "center";
+        overlay.style.zIndex = "999999";
 
-      img.style.filter = "blur(64px)";
-      img.style.opacity = "0.7";
+        img.style.filter = "blur(64px)";
+        img.style.opacity = "0.7";
 
-      const sensitiveText = document.createElement("div");
-      sensitiveText.innerText = "Image Content";
-      sensitiveText.style.fontSize = "18px";
-      sensitiveText.style.fontWeight = "bold";
-      overlay.appendChild(sensitiveText);
+        const sensitiveText = document.createElement("div");
+        sensitiveText.innerText = "Image Content";
+        sensitiveText.style.fontSize = "18px";
+        sensitiveText.style.fontWeight = "bold";
+        overlay.appendChild(sensitiveText);
 
-      const description = document.createElement("div");
-      description.innerText =
-        "This image may contain sensitive or disturbing content.";
-      description.style.fontSize = "12px";
-      overlay.appendChild(description);
+        const description = document.createElement("div");
+        description.innerText =
+          "This image may contain sensitive or disturbing content.";
+        description.style.fontSize = "12px";
+        overlay.appendChild(description);
 
-      const loading = document.createElement("div");
-      loading.innerText = "Loading...";
-      loading.style.display = "none";
-      overlay.appendChild(loading);
-
-      const button = document.createElement("button");
-      button.innerText = "See Image";
-      button.style.marginTop = "10px";
-      button.style.padding = "5px 15px";
-      button.style.backgroundColor = "transparent";
-      button.style.color = "white";
-      button.style.border = "1px solid white";
-      button.style.borderRadius = "5px";
-      button.style.cursor = "pointer";
-      button.onclick = function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-
+        const loading = document.createElement("div");
+        loading.innerText = "Loading...";
         loading.style.display = "block";
-        button.disabled = true;
+        overlay.appendChild(loading);
 
+        // const button = document.createElement("button");
+        // button.innerText = "See Image";
+        // button.style.marginTop = "10px";
+        // button.style.padding = "5px 15px";
+        // button.style.backgroundColor = "transparent";
+        // button.style.color = "white";
+        // button.style.border = "1px solid white";
+        // button.style.borderRadius = "5px";
+        // button.style.cursor = "pointer";
+        // button.onclick = function (e) {
+        //   e.stopPropagation();
+        //   e.preventDefault();
+
+        //   loading.style.display = "block";
+        //   button.disabled = true;
+        // };
+
+        // overlay.appendChild(button);
+
+        img.parentNode.insertBefore(overlay, img);
+        img.style.pointerEvents = "none";
+
+        img.dataset.covered = "false";
+        
         fetch("https://flask-snailly.unikom.ac.id/predict-image", {
           method: "POST",
           headers: {
@@ -143,15 +153,7 @@ function coverImages() {
           .catch((error) => {
             console.error("Error fetching API:", error);
           });
-      };
-
-      overlay.appendChild(button);
-
-      img.parentNode.insertBefore(overlay, img);
-      img.style.pointerEvents = "none";
-
-      img.dataset.covered = "false";
-      // }
+      }
     }
   }
 }
