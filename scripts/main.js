@@ -128,7 +128,7 @@ function coverImages() {
 
         img.dataset.covered = "false";
         
-        fetch("https://flask-snailly.unikom.ac.id/predict-image", {
+        fetch("http://172.172.232.224:5001/predict-image", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
